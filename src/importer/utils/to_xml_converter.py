@@ -14,19 +14,19 @@ class CSVtoXMLConverter:
         self._reader = CSVReader(path)
 
     def to_xml(self):
-        # read countries
+        # read cities
         cities = self._reader.read_entities(
             attr="City",
-            builder=lambda row: City(row["City"])
+            builder=lambda row: City(str(row["City"]).split(",")[0])
         )
 
-        # read teams
+        # read jobs
         jobs = self._reader.read_entities(
             attr="Name",
             builder=lambda row: Job(row["Name"])
         )
 
-        # read players
+        # read companies
 
         def after_creating_company(company, row):
             # add the player to the appropriate team
@@ -36,7 +36,8 @@ class CSVtoXMLConverter:
             attr="Company",
             builder=lambda row: Company(
                 name=row["Company"],
-                city=cities[row["City"]]
+                city=cities[row["City"]],
+                summary=row["Summary"]
             ),
             after_create=after_creating_company
         )
@@ -49,8 +50,14 @@ class CSVtoXMLConverter:
             jobs_el.append(job.to_xml())
 
         cities_el = ET.Element("Cities")
+        citycheck = []
         for city in cities.values():
-            cities_el.append(city.to_xml())
+            cd = city
+            cd = str(cd).split(",")
+            cd = cd[0]
+            if cd not in citycheck:
+                cities_el.append(city.to_xml())
+                citycheck.append(cd)
 
         root_el.append(cities_el)
         root_el.append(jobs_el)
