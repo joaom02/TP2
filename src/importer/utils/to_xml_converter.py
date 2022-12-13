@@ -3,9 +3,9 @@ import xml.dom.minidom as md
 import xml.etree.ElementTree as ET
 
 from utils.reader import CSVReader
-from entities.city import City
-from entities.job import Job
-from entities.company import Company
+from entities.country import Country
+from entities.team import Team
+from entities.player import Player
 
 
 class CSVtoXMLConverter:
@@ -15,45 +15,46 @@ class CSVtoXMLConverter:
 
     def to_xml(self):
         # read countries
-        cities = self._reader.read_entities(
-            attr="City",
-            builder=lambda row: City(row["City"])
+        countries = self._reader.read_entities(
+            attr="nationality",
+            builder=lambda row: Country(row["nationality"])
         )
 
         # read teams
-        jobs = self._reader.read_entities(
-            attr="Name",
-            builder=lambda row: Job(row["Name"])
+        teams = self._reader.read_entities(
+            attr="Current Club",
+            builder=lambda row: Team(row["Current Club"])
         )
 
         # read players
 
-        def after_creating_company(company, row):
+        def after_creating_player(player, row):
             # add the player to the appropriate team
-            jobs[row["Name"]].add_company(company)
+            teams[row["Current Club"]].add_player(player)
 
         self._reader.read_entities(
-            attr="Company",
-            builder=lambda row: Company(
-                name=row["Company"],
-                city=cities[row["City"]]
+            attr="full_name",
+            builder=lambda row: Player(
+                name=row["full_name"],
+                age=row["age"],
+                country=countries[row["nationality"]]
             ),
-            after_create=after_creating_company
+            after_create=after_creating_player
         )
 
         # generate the final xml
-        root_el = ET.Element("JobDataset")
+        root_el = ET.Element("Football")
 
-        jobs_el = ET.Element("Jobs")
-        for job in jobs.values():
-            jobs_el.append(job.to_xml())
+        teams_el = ET.Element("Teams")
+        for team in teams.values():
+            teams_el.append(team.to_xml())
 
-        cities_el = ET.Element("Cities")
-        for city in cities.values():
-            cities_el.append(city.to_xml())
+        countries_el = ET.Element("Countries")
+        for country in countries.values():
+            countries_el.append(country.to_xml())
 
-        root_el.append(cities_el)
-        root_el.append(jobs_el)
+        root_el.append(teams_el)
+        root_el.append(countries_el)
 
         return root_el
 
