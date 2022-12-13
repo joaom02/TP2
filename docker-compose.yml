@@ -1,0 +1,47 @@
+
+
+services:
+
+  # Database to store XML data
+  db-xml:
+    container_name: db-xml
+    build: images/db/xml
+    volumes:
+      - xml-data:/var/lib/postgresql/shared-data/
+    ports:
+      - "10001:5432"
+
+  # Database to store Relational data
+  db-rel:
+    container_name: db-rel
+    build: images/db/rel
+    volumes:
+      - rel-data:/var/lib/postgresql/shared-data/
+    ports:
+      - "10002:5432"
+
+  # Container that automatically converts CSV to XML and then imports the XML to db-xml
+  importer:
+    container_name: importer
+    build: images/python
+    volumes:
+      - ./src/importer:/usr/src/app
+      - ./volumes/shared:/shared
+      - ./volumes/csv:/csv
+    environment:
+      USE_DEV_MODE: ${USE_DEV_MODE}
+
+  # Container that runs the RPC server
+  rpc-server:
+    container_name: rpc-server
+    build: images/python
+    volumes:
+      - ./src/rpc-server:/usr/src/app
+      - ./volumes/shared:/shared
+    environment:
+      USE_DEV_MODE: ${USE_DEV_MODE}
+      RPC_SERVER_PORT: ${RPC_SERVER_PORT}
+
+volumes:
+  xml-data:
+  rel-data:
