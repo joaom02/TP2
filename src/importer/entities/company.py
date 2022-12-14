@@ -12,6 +12,7 @@ class Company:
 
     def to_xml(self):
         el = ET.Element("Company")
+        el.set("id", self._id)
         el.set("name", self._name)
         el.set("city_ref", str(self._city.get_id()))
         el.set("summary", self._summary)
