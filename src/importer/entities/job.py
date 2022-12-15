@@ -1,33 +1,33 @@
 import xml.etree.ElementTree as ET
 
-from entities.company import Company
 
 class Job:
 
-    def __init__(self, name: str):
+    def __init__(self, name, city, summary):
         Job.counter += 1
         self._id = Job.counter
         self._name = name
-        self._companies = []
-
-    def add_company(self, company: Company):
-        self._companies.append(company)
+        self._city = city
+        self._summary = summary
 
     def to_xml(self):
         el = ET.Element("Job")
+        el1 = ET.Element("Summary")
+        el2 = ET.Element("Name")
+        el3 = ET.Element("City")
         el.set("id", str(self._id))
-        el.set("name", self._name)
+        el2.text = self._name
+        el3.set("ref",str(self._city.get_id()))
 
-        companies_el = ET.Element("Companies")
-        for company in self._companies:
-            companies_el.append(company.to_xml())
-
-        el.append(companies_el)
+        el1.text = self._summary
+        el.append(el2)
+        el.append(el3)
+        el.append(el1)
 
         return el
 
     def __str__(self):
-        return f"{self._name} ({self._id})"
+        return f"{self._name}, country:{self._city}"
 
 
 Job.counter = 0

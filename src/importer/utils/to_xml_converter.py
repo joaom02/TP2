@@ -4,8 +4,8 @@ import xml.etree.ElementTree as ET
 
 from utils.reader import CSVReader
 from entities.city import City
-from entities.job import Job
 from entities.company import Company
+from entities.job import Job
 
 
 class CSVtoXMLConverter:
@@ -21,33 +21,36 @@ class CSVtoXMLConverter:
         )
 
         # read jobs
-        jobs = self._reader.read_entities(
-            attr="Name",
-            builder=lambda row: Job(row["Name"])
+        companies = self._reader.read_entities(
+            attr="Company",
+            builder=lambda row: Company(
+                name=row["Company"],
+                rating=row["Ratings"]
+                ),
         )
 
         # read companies
 
-        def after_creating_company(company, row):
+        def after_creating_job(job, row):
             # add the player to the appropriate team
-            jobs[row["Name"]].add_company(company)
+            companies[row["Company"]].add_job(job)
 
         self._reader.read_entities(
-            attr="Company",
-            builder=lambda row: Company(
-                name=row["Company"],
+            attr="Name",
+            builder=lambda row: Job(
+                name=row["Name"],
                 city=cities[row["City"]],
                 summary=row["Summary"]
             ),
-            after_create=after_creating_company
+            after_create=after_creating_job
         )
 
         # generate the final xml
         root_el = ET.Element("JobDataset")
 
-        jobs_el = ET.Element("Jobs")
-        for job in jobs.values():
-            jobs_el.append(job.to_xml())
+        companies_el = ET.Element("Companies")
+        for company in companies.values():
+            companies_el.append(company.to_xml())
 
         cities_el = ET.Element("Cities")
         citycheck = []
@@ -60,7 +63,7 @@ class CSVtoXMLConverter:
                 citycheck.append(cd)
 
         root_el.append(cities_el)
-        root_el.append(jobs_el)
+        root_el.append(companies_el)
 
         return root_el
 
