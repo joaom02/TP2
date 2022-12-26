@@ -1,15 +1,17 @@
 import xml.etree.ElementTree as ET
 
-
-class Country:
+nomes = []
+class City:
 
     def __init__(self, name):
-        Country.counter += 1
-        self._id = Country.counter
         self._name = name
+        if self._name not in nomes:
+            City.counter += 1
+            nomes.append(self._name)
+        self._id = City.counter
 
     def to_xml(self):
-        el = ET.Element("Country")
+        el = ET.Element("City")
         el.set("id", str(self._id))
         el.set("name", self._name)
         return el
@@ -21,4 +23,4 @@ class Country:
         return f"name: {self._name}, id:{self._id}"
 
 
-Country.counter = 0
+City.counter = 0
