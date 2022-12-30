@@ -1,6 +1,7 @@
 import os
 import time
 import uuid
+import psycopg2
 
 from utils.to_xml_converter import CSVtoXMLConverter
 
@@ -46,6 +47,38 @@ if __name__ == "__main__":
             print(f"new xml file generated: '{xml_path}'")
 
             #!TODO: we store the XML into the imported_documents table
+            connection = None
+            cursor = None
+            data = ""
+            result = True
+            nomeXML = xml_path.split(".")
+            
+            try:
+                f = open(xml_path,"r")
+                for row in f:
+                    data = data + row
+                    
+                connection = psycopg2.connect(host='db-xml', database='is', user='is', password='is')
+                
+                cursor = connection.cursor()
+                sql = 'INSERT INTO imported_documents (file_name,xml) VALUES (%s,%s) ON CONFLICT DO NOTHING' 
+                values = (xml_path,data)
+
+                cursor.execute(sql,values)
+                print("XML guardado com sucesso")
+               
+                connection.commit()
+
+            except (Exception, psycopg2.Error) as error:
+                print("Failed to fetch data", error)
+                result = False
+
+            finally:
+                if connection:
+                    
+                    cursor.close()
+                    
+                    connection.close()
 
             #!FIXME: instead of updating the local cache for converted files, we should reload them from the database
             #!FIXME: in the next iteration

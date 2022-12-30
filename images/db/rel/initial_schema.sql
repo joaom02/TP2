@@ -2,40 +2,41 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS POSTGIS;
 CREATE EXTENSION IF NOT EXISTS POSTGIS_TOPOLOGY;
 
-CREATE TABLE public.teams (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE public.cities (
+	id              INTEGER PRIMARY KEY,
 	name            VARCHAR(250) NOT NULL,
+	latitude		DECIMAL(8,6) DEFAULT 0,
+	longitude		DECIMAL(9,6) DEFAULT 0,
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE public.countries (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-	name            VARCHAR(250) UNIQUE NOT NULL,
-	geom            GEOMETRY,
-	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
-	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE public.players (
-	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE public.jobs (
+	id              INTEGER PRIMARY KEY,
 	name            VARCHAR(250) NOT NULL,
-	age             INT NOT NULL,
-	team_id         uuid,
-	country_id      uuid NOT NULL,
+	companyid 		INTEGER,
+	cityref         INTEGER,
+	summary			VARCHAR(5000),
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-ALTER TABLE players
-    ADD CONSTRAINT players_countries_id_fk
-        FOREIGN KEY (country_id) REFERENCES countries
+CREATE TABLE public.companies (
+	id              INTEGER PRIMARY KEY ,
+	name            VARCHAR(250) NOT NULL,
+	rating         	VARCHAR(6),
+	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
+	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE jobs
+    ADD CONSTRAINT jobs_cities_id_fk
+        FOREIGN KEY (cityref) REFERENCES cities
             ON DELETE CASCADE;
 
-ALTER TABLE players
-    ADD CONSTRAINT players_teams_id_fk
-        FOREIGN KEY (team_id) REFERENCES teams
-            ON DELETE SET NULL;
+ALTER TABLE jobs
+    ADD CONSTRAINT jobs_companies_id_fk
+        FOREIGN KEY (companyid) REFERENCES companies
 
 
 
