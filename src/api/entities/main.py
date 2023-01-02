@@ -52,7 +52,17 @@ def insert_jobs():
 
 @app.route('/api/teams/', methods=['GET'])
 def get_teams():
-    return jsonify([team.__dict__ for team in teams])
+    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+    
+    cursor_insert = db_dst.cursor()
+    data={}
+    cursor_insert.execute("SELECT name FROM cities")
+    for name in cursor_insert:
+        data= {
+            "name":name
+        } 
+
+    return data
 
 
 @app.route('/api/teams/', methods=['POST'])
