@@ -2,13 +2,13 @@ import sys
 
 from flask import Flask, jsonify, request
 import psycopg2
-from entities import Team
+from entities import City
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 
 # set of all teams
 # !TODO: replace by database access
-teams = []
+cities = []
 db_dst = None
 
 
@@ -50,27 +50,26 @@ def insert_jobs():
     return data
 
 
-@app.route('/api/teams/', methods=['GET'])
-def get_teams():
+@app.route('/api/cities/get/', methods=['GET'])
+def get_cities():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     
-    cursor_insert = db_dst.cursor()
-    data={}
+    cursor_insert = db_dst.cursor() 
     cursor_insert.execute("SELECT name FROM cities")
-    for name in cursor_insert:
-        data= {
-            "name":name
-        } 
-
-    return data
+    for element in cursor_insert:
+        city = City(name=element)
+        cities.append(city)
+    return jsonify([city.__dict__ for city in cities]), 201
 
 
-@app.route('/api/teams/', methods=['POST'])
-def create_team():
+@app.route('/api/cities/', methods=['POST'])
+def get_city():
     data = request.get_json()
-    team = Team(name=data['name'])
-    teams.append(team)
-    return jsonify(team.__dict__), 201
+    cursor_insert = db_dst.cursor() 
+    cursor_insert.execute("SELECT name FROM cities")
+    city = City(name=data['name'])
+    cities.append(city)
+    return jsonify([city.__dict__ for city in cities]), 201
 
 
 if __name__ == '__main__':
