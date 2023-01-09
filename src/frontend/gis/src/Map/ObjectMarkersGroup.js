@@ -49,6 +49,21 @@ const DEMO_DATA = [
             imgUrl: "https://cdn-icons-png.flaticon.com/512/805/805409.png",
             number: 11
         }
+    },
+    {
+        "type": "feature",
+        "geometry": {
+            "type": "Point",
+            "coordinates": [40.741895, -73.989308]
+        },
+        "properties": {
+            id: "4cb5b2f0-343d-4250-ba5c-3a235343cb01",
+            name: "ZÉ",
+            country: "PORTUGAL",
+            position: "Striker",
+            imgUrl: "https://cdn-icons-png.flaticon.com/512/805/805409.png",
+            number: 12
+        }
     }
 ];
 
