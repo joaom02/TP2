@@ -1,23 +1,26 @@
-import Players from "../Tables/Players";
+import Jobs from "../Tables/Jobs";
+import Cities from "../Tables/Cities";
+import Companies from "../Tables/Companies";
+
 
 const Sections = [
 
     {
-        id: "players",
-        label: "Players",
-        content: <Players/>
+        id: "jobs",
+        label: "JObs",
+        content: <Jobs/>
     },
 
     {
         id: "teams",
         label: "Teams",
-        content: <h1>Teams - Work in progresss</h1>
+        content: <Companies/>
     },
 
     {
-        id: "countries",
-        label: "Countries",
-        content: <h1>Countries - Work in progress</h1>
+        id: "cities",
+        label: "Cities",
+        content: <Cities/>
     }
 
 ];

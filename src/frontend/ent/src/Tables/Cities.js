@@ -11,45 +11,33 @@ import {
     TableRow
 } from "@mui/material";
 
-function Players() {
+function Cities() {
 
     const PAGE_SIZE = 10;
     const [page, setPage] = useState(1);
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:20001/api/jobs/get/')
+        fetch('http://localhost:20001/api/cities/get/')
             .then(response => response.json())
             .then(jsonData => setData(jsonData));
     }, [])
 
-    const [maxDataSize, setMaxDataSize] = useState(200);
-
-
-
-
-
-    // useEffect(() => {
-    //     //!FIXME: this is to simulate how to retrieve data from the server
-    //     //!FIXME: the entities server URL is available on process.env.REACT_APP_API_ENTITIES_URL
-    //     setData(null);
-    //     setTimeout(() => {
-    //         console.log(`fetching from ${process.env.REACT_APP_API_ENTITIES_URL}`)
-    //         setData(DEMO_PLAYERS.filter((item, index) => Math.floor(index / PAGE_SIZE) === (page - 1)));
-    //     }, 500);
-    // }, [page])
+    console.log(data)
+    const [maxDataSize, setMaxDataSize] = useState(data);
 
     return (
         <>
-            <h1>Jobs</h1>
+            <h1>Cities</h1>
 
             <TableContainer component={Paper}>
                 <Table sx={{minWidth: 650}} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell component="th" width={"1px"} align="center">ID</TableCell>
-                            <TableCell>Job Name</TableCell>
-                            <TableCell>Summary</TableCell>
+                            <TableCell>City Name</TableCell>
+                            <TableCell>Latitude</TableCell>
+                            <TableCell>Longitude</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -65,7 +53,10 @@ function Players() {
                                             {row.name}
                                         </TableCell>
                                         <TableCell component="td" align="center" scope="row">
-                                            {row.summary}
+                                            {row.latitude}
+                                        </TableCell>
+                                        <TableCell component="td" align="center" scope="row">
+                                            {row.longitude}
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -98,4 +89,4 @@ function Players() {
     );
 }
 
-export default Players;
+export default Cities;

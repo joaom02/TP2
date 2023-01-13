@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 import psycopg2
 from entities import City
 from entities import Job
+from entities import Company
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 
@@ -56,15 +57,28 @@ def insert_jobs():
     return data
 
 
+@app.route('/api/companies/get/', methods=['GET'])
+def get_companies():
+    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+    companies = []
+    
+    cursor_insert = db_dst.cursor() 
+    cursor_insert.execute("SELECT id, name, rating FROM companies")
+    for element in cursor_insert:
+        company = Company(name=element[1], id = element[0], rating = element[2])
+        companies.append(company)
+    return jsonify([company.__dict__ for company in companies]), 201
+
+
 @app.route('/api/cities/get/', methods=['GET'])
 def get_cities():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     cities = []
     
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("SELECT id, name FROM cities")
+    cursor_insert.execute("SELECT id, name, latitude, longitude FROM cities")
     for element in cursor_insert:
-        city = City(name=element[1], id = element[0])
+        city = City(name=element[1], id = element[0], latitude = element[2], longitude = element[3])
         cities.append(city)
     return jsonify([city.__dict__ for city in cities]), 201
 
