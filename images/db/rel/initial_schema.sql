@@ -16,7 +16,7 @@ CREATE TABLE public.jobs (
 	name            VARCHAR(250) NOT NULL,
 	companyid 		INTEGER,
 	cityref         INTEGER,
-	summary			VARCHAR(5000),
+	summary			VARCHAR(10000),
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );

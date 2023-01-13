@@ -23,3 +23,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # run the script
 CMD (chmod +x ./run.sh) && (./run.sh)
+
+RUN npm install axios
