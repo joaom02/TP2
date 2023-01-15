@@ -3,7 +3,7 @@ CREATE EXTENSION IF NOT EXISTS POSTGIS;
 CREATE EXTENSION IF NOT EXISTS POSTGIS_TOPOLOGY;
 
 CREATE TABLE public.cities (
-	id              INTEGER PRIMARY KEY,
+	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	name            VARCHAR(250) NOT NULL,
 	latitude		DECIMAL(8,6) DEFAULT  NULL,
 	longitude		DECIMAL(9,6) DEFAULT NULL,
@@ -12,17 +12,17 @@ CREATE TABLE public.cities (
 );
 
 CREATE TABLE public.jobs (
-	id              INTEGER PRIMARY KEY,
+	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	name            VARCHAR(250) NOT NULL,
-	companyid 		INTEGER,
-	cityref         INTEGER,
+	companyid 		uuid,
+	cityref         uuid,
 	summary			VARCHAR(10000),
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 CREATE TABLE public.companies (
-	id              INTEGER PRIMARY KEY ,
+	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	name            VARCHAR(250) NOT NULL,
 	rating         	VARCHAR(6),
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),

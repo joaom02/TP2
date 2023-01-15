@@ -4,6 +4,7 @@ import time
 import psycopg2
 from psycopg2 import OperationalError
 import requests
+import json
 
 POLLING_FREQ = int(sys.argv[1]) if len(sys.argv) >= 2 else 60
 
@@ -39,7 +40,6 @@ if __name__ == "__main__":
         
 
         try:
-
             db_org = psycopg2.connect(host='db-xml', database='is', user='is', password='is')
             cursor_org = db_org.cursor()
             
@@ -48,73 +48,85 @@ if __name__ == "__main__":
 
             for file_name in cursor_org:
                
+                cities=[]
+                companies=[]
+                jobs=[]
+
                  # !TODO: 2- Execute a SELECT queries with xpath to retrieve the data we want to store in the relational db
                 name=str(file_name).split("'")
                 cursor_data=db_org.cursor()
                 
-                cursor_data.execute("SELECT unnest(xpath('//City/@id',xml)),unnest(xpath('//City/@name',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                cursor_data.execute("SELECT unnest(xpath('//City/@name',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
                 
                 for element in cursor_data:
                     city = {
-                    "id":element[0],
-                    "name":element[1]
+                    "name":element[0]
                     }
-                    # !TODO: 3- Execute INSERT queries in the destination db
-                    #Mandar para a API
-                    
-                    try:
-                        url='http://api-entities:8080/api/cities/insert/'
-                        x = requests.post(url,json=city)
-                        
-                    except(Exception, psycopg2.Error) as error:
-                        print(error)
+                    cities.append(city)
+                   
+                #!TODO: 3- Execute INSERT queries in the destination db
+                #Mandar para a API
                 
-                cursor_data.execute("SELECT unnest(xpath('//Company/@id',xml)),unnest(xpath('//Company/Name/text()',xml)),unnest(xpath('//Company/Rating/text()',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                try:
+                    url='http://api-entities:8080/api/cities/insert/'
+                    x = requests.post(url,json=json.dumps(cities))
+                except(Exception, psycopg2.Error) as error:
+                    print(error)
+
+                
+            
+                cursor_data.execute("SELECT unnest(xpath('//Company/Name/text()',xml)),unnest(xpath('//Company/Rating/text()',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
 
                 for element in cursor_data:
                     company = {
-                        "id":element[0],
-                        "name":element[1],
-                        "rating":element[2]
+                        "name":element[0],
+                        "rating":element[1]
                     }
-                    
-                    # !TODO: 3- Execute INSERT queries in the destination db
-                    #Mandar para a API
-                    try:
-                        url='http://api-entities:8080/api/companies/insert/'
-                        x = requests.post(url,json=company)
-                        
-                    except(Exception, psycopg2.Error) as error:
-                       print(error)
+                    companies.append(company)
+
+                #!TODO: 3- Execute INSERT queries in the destination db
+                #Mandar para a API
                 
-                cursor_data.execute("SELECT unnest(xpath('//Company/@id',xml)),unnest(xpath('//Job/@id',xml)),unnest(xpath('//Job/Name/text()',xml)),unnest(xpath('//Job/City/@ref',xml)),unnest(xpath('//Job/Summary/text()',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                try:
+                    url='http://api-entities:8080/api/companies/insert/'
+                    x = requests.post(url,json=json.dumps(companies))
+                except(Exception, psycopg2.Error) as error:
+                    print(error)
+                
+               
+
+                cursor_data.execute("SELECT unnest(xpath('//Job/Name/text()',xml)),unnest(xpath('//Job/Summary/text()',xml)),unnest(xpath('//Company/Name/text()',xml)),unnest(xpath('//Job/City/@ref',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
 
                 for element in cursor_data:
-                    summary = str(element[4]).replace("'"," ")
+                    cursor_temp = db_org.cursor()
+                    summary = str(element[1]).replace("'"," ")
+                    cursor_temp.execute("SELECT unnest(xpath('//City[@id="+str(element[3])+"]/@name',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                    for city in cursor_temp:
+                        companyName = city[0]
                     job = {
-                        
-                        "id":element[1],
-                        "name":element[2],
-                        "companyid":element[0],
-                        "cityRef":element[3],
+                        "name":element[0],
+                        "companyname":element[2],
+                        "cityname":companyName,
                         "summary":summary
-                        
                     }
-                    
-                    # !TODO: 3- Execute INSERT queries in the destination db
-                    #Mandar para a API
-                    try:
-                       url='http://api-entities:8080/api/jobs/insert/'
-                       x = requests.post(url,json=job)
-                       
-                    except(Exception, psycopg2.Error) as error:
-                       print(error)
+                    jobs.append(job)
 
+                   
+                #!TODO: 3- Execute INSERT queries in the destination db
+                #Mandar para a API
+                
+                try:
+                    url='http://api-entities:8080/api/jobs/insert/'
+                    x = requests.post(url,json=json.dumps(jobs))
+                except(Exception, psycopg2.Error) as error:
+                    print(error)
+                
+                
                 # !TODO: 4- Make sure we store somehow in the origin database that certain records were already migrated.
                 #          Change the db structure if needed.
 
                 cursor_store = db_org.cursor()
-                
+
                 cursor_store.execute("INSERT INTO converted_documents (file_name) values ('"+str(name[1])+"')")
                 db_org.commit()
                 

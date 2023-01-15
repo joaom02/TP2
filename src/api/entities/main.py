@@ -2,6 +2,7 @@ import sys
 
 from flask import Flask, jsonify, request
 import psycopg2
+import json
 from entities import City
 from entities import Job
 from entities import Company
@@ -10,7 +11,6 @@ PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 
 # set of all teams
 # !TODO: replace by database access
-cities = []
 db_dst = None
 
 
@@ -24,23 +24,39 @@ app.config["DEBUG"] = True
 
 
 
-@app.route('/api/cities/insert/',methods=['POST'])
+@app.route('/api/cities/insert/',methods=['POST','GET'])
 def insert_cities():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     data = request.get_json()
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("INSERT INTO cities (id,name) values ('"+data["id"]+"','"+data["name"]+"')")
+    cities = json.loads(data)
+    for city in cities:
+        cursor_insert.execute("SELECT * FROM cities WHERE name = '"+city["name"]+"'")
+        temp = cursor_insert.fetchall()
+
+        if len(temp) == 0:
+            cursor_insert.execute("INSERT INTO cities (name) values ('"+city["name"]+"')")
+
     db_dst.commit()
     db_dst.close()
     return data
 
 
+
 @app.route('/api/companies/insert/',methods=['POST'])
 def insert_companies():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
-    data = request.get_json()
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("INSERT INTO companies (id,name,rating) values ('"+data["id"]+"','"+data["name"]+"','"+data["rating"]+"')")
+    data = request.get_json()
+    companies = json.loads(data)
+
+    for company in companies:
+        cursor_insert.execute("SELECT * FROM companies WHERE name = '"+company["name"]+"'")
+        temp = cursor_insert.fetchall()
+
+        if len(temp) == 0:
+            cursor_insert.execute("INSERT INTO companies (name,rating) values ('"+company["name"]+"','"+company["rating"]+"')")
+
     db_dst.commit()
     db_dst.close()
     return data
@@ -50,8 +66,21 @@ def insert_companies():
 def insert_jobs():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     data = request.get_json()
-    cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("INSERT INTO jobs (id,name,companyid,cityref,summary) values ('"+data["id"]+"','"+data["name"]+"','"+data["companyid"]+"','"+data["cityRef"]+"','"+data["summary"]+"')")
+    cursor_insert = db_dst.cursor()
+    jobs = json.loads(data)
+    
+    for job in jobs:
+
+        cursor_insert.execute("SELECT id FROM companies WHERE name = '"+str(job["companyname"])+"'")
+        for e in cursor_insert:
+            companyname=e[0]
+
+        cursor_insert.execute("SELECT id FROM cities WHERE name = '"+str(job["cityname"])+"'")
+        for e in cursor_insert:
+            cityname=e[0]
+
+        cursor_insert.execute("INSERT INTO jobs (name,companyid,cityref,summary) values ('"+job["name"]+"','"+str(companyname)+"','"+str(cityname)+"','"+job["summary"]+"')")
+    
     db_dst.commit()
     db_dst.close()
     return data
