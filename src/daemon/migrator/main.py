@@ -109,12 +109,9 @@ if __name__ == "__main__":
                         "cityname":companyName,
                         "summary":summary
                     }
-                    jobs.append(job)
-
-                   
+                    jobs.append(job) 
                 #!TODO: 3- Execute INSERT queries in the destination db
                 #Mandar para a API
-                
                 try:
                     url='http://api-entities:8080/api/jobs/insert/'
                     x = requests.post(url,json=json.dumps(jobs))
