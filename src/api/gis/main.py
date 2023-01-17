@@ -1,6 +1,7 @@
 import sys
 import psycopg2
 from flask import Flask,jsonify, request
+import json
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 db_dst = None
@@ -33,14 +34,15 @@ def save():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     data = request.get_json()
     cursor_save = db_dst.cursor() 
+    cities=[]
     
-    i=1
     for city in data:
-        cursor_save.execute("UPDATE cities SET latitude = "+str(data[""+str(i)+""]["latitude"])+", longitude = "+ str(data[""+str(i)+""]["longitude"])+" WHERE id = "+str(data[""+str(i)+""]["id"]))
-        i+=1 
+        cities.append(city)
+        cursor_save.execute("UPDATE cities SET latitude = "+str(data[city]["latitude"])+", longitude = "+ str(data[city]["longitude"])+" WHERE id = "+str(data[city]["id"]))
+        cursor_save.execute("SELECT * FROM cities")
     db_dst.commit()
     db_dst.close() 
-    return "Guardado com sucesso",200
+    return json.dumps(cities)
    
 
 

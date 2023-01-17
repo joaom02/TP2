@@ -32,23 +32,29 @@ if __name__ == "__main__":
 
         geolocator = Nominatim(user_agent="MyApp")
         
-        i=1
+        
         for city in cities:
             
-            location = geolocator.geocode(cities[""+str(i)+""]["name"])
-            cities[""+str(i)+""]["latitude"] = location.latitude
-            cities[""+str(i)+""]["longitude"] = location.longitude
-            i+=1
+            location = geolocator.geocode(cities[city]["name"])
+            cities[city]["latitude"] = location.latitude
+            cities[city]["longitude"] = location.longitude
+            
         
         try:
 
             url='http://api-gis:8080/api/save/'
             x = requests.post(url,json=cities)
-            
         except(Exception, psycopg2.Error) as error:
             print(error)
 
+        db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+
+        cursor_save = db_dst.cursor()
         
+        cursor_save.execute("SELECT * FROM cities")
+
+        for e in cursor_save:
+            print(e) 
 
 
         # !TODO: 3- Submit the changes

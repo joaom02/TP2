@@ -5,8 +5,8 @@ CREATE EXTENSION IF NOT EXISTS POSTGIS_TOPOLOGY;
 CREATE TABLE public.cities (
 	id              uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
 	name            VARCHAR(250) NOT NULL,
-	latitude		DECIMAL(8,6) DEFAULT  NULL,
-	longitude		DECIMAL(9,6) DEFAULT NULL,
+	latitude		VARCHAR(20) DEFAULT  NULL,
+	longitude		VARCHAR(20) DEFAULT NULL,
 	created_on      TIMESTAMP NOT NULL DEFAULT NOW(),
 	updated_on      TIMESTAMP NOT NULL DEFAULT NOW()
 );
