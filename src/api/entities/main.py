@@ -80,8 +80,9 @@ def insert_jobs():
             cityname=e[0]
 
         cursor_insert.execute("INSERT INTO jobs (name,companyid,cityref,summary) values ('"+job["name"]+"','"+str(companyname)+"','"+str(cityname)+"','"+job["summary"]+"')")
+        db_dst.commit()
+        cursor_insert.execute("SELECT * FROM jobs")
     
-    db_dst.commit()
     db_dst.close()
     return data
 

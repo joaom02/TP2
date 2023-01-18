@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         cursor_save = db_dst.cursor()
         
-        cursor_save.execute("SELECT * FROM cities")
+        cursor_save.execute("SELECT * FROM jobs")
 
         for e in cursor_save:
             print(e) 
