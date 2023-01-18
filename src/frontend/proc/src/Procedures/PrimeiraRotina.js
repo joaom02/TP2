@@ -1,51 +1,28 @@
 import React, {useEffect, useState} from "react";
 import {Box, CircularProgress, Container, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 
-const DEMO_TEAMS = [
-    {"team": "Manchester United", country: "UK"},
-    {"team": "Manchester City", country: "UK"},
-    {"team": "Chelsea", country: "UK"},
-    {"team": "Tottenham", country: "UK"},
-    {"team": "Fulham", country: "UK"},
-
-    {"team": "Sporting", country: "Portugal"},
-    {"team": "Porto", country: "Portugal"},
-    {"team": "Benfica", country: "Portugal"},
-    {"team": "Braga", country: "Portugal"},
-
-    {"team": "PSG", country: "France"},
-    {"team": "Lyon", country: "France"},
-    {"team": "Olympique de Marseille", country: "France"}
-];
-
-const COUNTRIES = [...new Set(DEMO_TEAMS.map(team => team.country))];
-
-
-function TopTeams() {
+function PrimeiraRotina() {
 
     const [selectedCountry, setSelectedCountry] = useState("");
 
     const [procData, setProcData] = useState(null);
+    const [data, setData] = useState(null);
     const [gqlData, setGQLData] = useState(null);
+    useEffect(() => {
+        fetch('http://localhost:20001/api/city/get/')
+            .then(response => response.json())
+            .then(jsonData => setData(jsonData));
+    }, [])
+
 
     useEffect(() => {
-        //!FIXME: this is to simulate how to retrieve data from the server
-        //!FIXME: the entities server URL is available on process.env.REACT_APP_API_ENTITIES_URL
-        setProcData(null);
-        setGQLData(null);
-
         if (selectedCountry) {
-            setTimeout(() => {
-                console.log(`fetching from ${process.env.REACT_APP_API_PROC_URL}`);
-                setProcData(DEMO_TEAMS.filter(t => t.country === selectedCountry));
-            }, 500);
-
-            setTimeout(() => {
-                console.log(`fetching from ${process.env.REACT_APP_API_GRAPHQL_URL}`);
-                setGQLData(DEMO_TEAMS.filter(t => t.country === selectedCountry));
-            }, 1000);
+          fetch(`http://localhost:20004/api/PrimeiraRotina?name=${selectedCountry}`)
+            .then(response => response.json())
+            .then(jsonData => setProcData(jsonData));
         }
-    }, [selectedCountry])
+        console.log(procData)
+      }, [selectedCountry]);
 
     return (
         <>
@@ -62,13 +39,14 @@ function TopTeams() {
                             id="demo-simple-select"
                             value={selectedCountry}
                             label="Country"
-                            onChange={(e, v) => {
-                                setSelectedCountry(e.target.value)
-                            }}
+                            onChange={(e, v) => {setSelectedCountry(e.target.value)}}
                         >
                             <MenuItem value={""}><em>None</em></MenuItem>
                             {
-                                COUNTRIES.map(c => <MenuItem key={c} value={c}>{c}</MenuItem>)
+                            data ?
+                            data.map(data => <MenuItem key={data} value={data}>{data}</MenuItem>)
+                                    :
+                                selectedCountry ? <CircularProgress/> : "--"
                             }
                         </Select>
                     </FormControl>
@@ -87,13 +65,13 @@ function TopTeams() {
                     procData ?
                         <ul>
                             {
-                                procData.map(data => <li>{data.team}</li>)
+                                procData.map(data => <li key={data}>{data}</li>)
                             }
                         </ul> :
-                        selectedCountry ? <CircularProgress/> : "--"
+                        procData ? <CircularProgress/> : "--"
                 }
                 <h2>Results <small>(GraphQL)</small></h2>
-                {
+                {/* {
                     gqlData ?
                         <ul>
                             {
@@ -101,10 +79,10 @@ function TopTeams() {
                             }
                         </ul> :
                         selectedCountry ? <CircularProgress/> : "--"
-                }
+                } */}
             </Container>
         </>
     );
 }
 
-export default TopTeams;
+export default PrimeiraRotina;
