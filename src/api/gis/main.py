@@ -49,24 +49,31 @@ def save():
 @app.route('/api/markers', methods=['GET'])
 def get_markers():
     args = request.args
-
-    return [
-        {
-            "type": "feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [41.69462, -8.84679]
-            },
-            "properties": {
-                "id": "7674fe6a-6c8d-47b3-9a1f-18637771e23b",
-                "name": "Ronaldo",
-                "country": "Portugal",
-                "position": "Striker",
-                "imgUrl": "https://cdn-icons-png.flaticon.com/512/805/805401.png",
-                "number": 7
+    cities = []
+    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+    
+    cursor_insert = db_dst.cursor() 
+    cursor_insert.execute("SELECT id, name, latitude, longitude FROM cities")
+    for element in cursor_insert:
+        #city = City(name=element[1], id = element[0], latitude = element[2], longitude = element[3])
+        city={
+                "type": "feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [element[2], element[3]]
+                },
+                "properties": {
+                    "id": element[0],
+                    "name": element[1],
+                    "country": "Portugal",
+                    "position": "Striker",
+                    "imgUrl": "https://cdn-icons-png.flaticon.com/512/805/805401.png",
+                    "number": 7
+                }
             }
-        }
-    ]
+        cities.append(city)
+    return jsonify(cities)
+    
 
 
 if __name__ == '__main__':
