@@ -44,6 +44,7 @@ if __name__ == "__main__":
 
             url='http://api-gis:8080/api/save/'
             x = requests.post(url,json=cities)
+            print(x.json())
         except(Exception, psycopg2.Error) as error:
             print(error)
 
@@ -51,7 +52,7 @@ if __name__ == "__main__":
 
         cursor_save = db_dst.cursor()
         
-        cursor_save.execute("SELECT * FROM jobs")
+        cursor_save.execute("SELECT * FROM cities")
 
         for e in cursor_save:
             print(e) 

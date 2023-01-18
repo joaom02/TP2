@@ -115,7 +115,6 @@ if __name__ == "__main__":
                 try:
                     url='http://api-entities:8080/api/jobs/insert/'
                     x = requests.post(url,json=json.dumps(jobs))
-                    print(x.json())
                 except(Exception, psycopg2.Error) as error:
                     print(error)
                 
