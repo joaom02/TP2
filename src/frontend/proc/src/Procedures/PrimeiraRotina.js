@@ -26,14 +26,14 @@ function PrimeiraRotina() {
 
     return (
         <>
-            <h1>Top Teams</h1>
+            <h1>Primeira Rotina</h1>
 
             <Container maxWidth="100%"
                        sx={{backgroundColor: 'background.default', padding: "2rem", borderRadius: "1rem"}}>
                 <Box>
                     <h2 style={{color: "white"}}>Options</h2>
                     <FormControl fullWidth>
-                        <InputLabel id="countries-select-label">Country</InputLabel>
+                        <InputLabel id="countries-select-label">City</InputLabel>
                         <Select
                             labelId="countries-select-label"
                             id="demo-simple-select"

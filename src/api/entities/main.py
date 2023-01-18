@@ -95,9 +95,9 @@ def get_companies():
     companies = []
     
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("SELECT id, name, rating FROM companies")
+    cursor_insert.execute("SELECT id, name, rating, created_on, updated_on FROM companies")
     for element in cursor_insert:
-        company = Company(name=element[1], id = element[0], rating = element[2])
+        company = Company(name=element[1], id = element[0], rating = element[2], created_on = element[3], updated_on = element[4])
         companies.append(company)
     return jsonify([company.__dict__ for company in companies]), 201
 
@@ -108,9 +108,9 @@ def get_cities():
     cities = []
     
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("SELECT id, name, latitude, longitude FROM cities")
+    cursor_insert.execute("SELECT id, name, latitude, longitude, created_on, updated_on FROM cities")
     for element in cursor_insert:
-        city = City(name=element[1], id = element[0], latitude = element[2], longitude = element[3])
+        city = City(name=element[1], id = element[0], latitude = element[2], longitude = element[3], created_on = element[4], updated_on = element[5])
         cities.append(city)
     return jsonify([city.__dict__ for city in cities]), 201
 
@@ -132,9 +132,9 @@ def get_jobs():
     jobs = []
     
     cursor_insert = db_dst.cursor() 
-    cursor_insert.execute("SELECT id, name, summary FROM jobs")
+    cursor_insert.execute("SELECT id, name, summary, created_on, updated_on FROM jobs")
     for element in cursor_insert:
-        job = Job(name=element[1], id = element[0], summary= element[2])
+        job = Job(name=element[1], id = element[0], summary= element[2],  created_on = element[3], updated_on = element[4])
         jobs.append(job)
     return jsonify([job.__dict__ for job in jobs]), 201
 

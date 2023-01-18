@@ -5,8 +5,8 @@ import ObjectMarkersGroup from "./ObjectMarkersGroup";
 function ObjectsMap() {
     return (
         <MapContainer style={{width: "100%", height: "100vh"}}
-                      center={[41.69462, -8.84679]}
-                      zoom={17}
+                      center={[37.875499649999995, -122.23906851395179]}
+                      zoom={13}
                       scrollWheelZoom={false}
         >
             <TileLayer

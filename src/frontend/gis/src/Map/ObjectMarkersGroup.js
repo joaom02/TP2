@@ -78,7 +78,7 @@ function ObjectMarkersGroup() {
             .then(jsonData => setData(jsonData));
     }, [])
 
-    const [geom, setGeom] = useState([...data]);
+    const [geom, setGeom] = useState([]);
     const [bounds, setBounds] = useState(map.getBounds());
 
 
@@ -101,7 +101,10 @@ function ObjectMarkersGroup() {
     /* Updates the data for the current bounds */
     useEffect(() => {
         console.log(`> getting data for bounds`, bounds);
-        setGeom(data.map(data => data));
+        if(data !== null){
+
+            setGeom(data);
+        }
     }, [bounds])
 
     return (

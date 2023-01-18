@@ -16,15 +16,25 @@ function Cities() {
     const PAGE_SIZE = 10;
     const [page, setPage] = useState(1);
     const [data, setData] = useState(null);
+    const [maxDataSize, setMaxDataSize] = useState(data);
+    const [fullData, setFullData] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:20001/api/cities/get/')
             .then(response => response.json())
-            .then(jsonData => setData(jsonData));
+            .then(jsonData => {
+                setFullData(jsonData)
+                setData(jsonData.filter((item, index) => Math.floor(index / PAGE_SIZE) === (page - 1)))
+                setMaxDataSize(jsonData.length)
+            });
     }, [])
 
-    console.log(data)
-    const [maxDataSize, setMaxDataSize] = useState(data);
+    useEffect(() => {
+        if(fullData !== null){
+
+            setData(fullData.filter((item, index) => Math.floor(index / PAGE_SIZE) === (page - 1)))
+        }
+    }, [page])
 
     return (
         <>

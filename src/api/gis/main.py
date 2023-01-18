@@ -6,6 +6,10 @@ import json
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 db_dst = None
 app = Flask(__name__)
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
 app.config["DEBUG"] = True
 
 
@@ -71,7 +75,7 @@ def get_markers():
                 }
             }
         cities.append(city)
-    return jsonify(cities)
+    return cities
     
 
 
