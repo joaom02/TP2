@@ -6,6 +6,7 @@ def PrimeiraRotina(cityName):
     cursor = None
     result=[]
     city = []
+    print(cityName)
   
     try:
         connection = psycopg2.connect(host='db-xml', database='is', user='is', password='is')
@@ -42,4 +43,5 @@ def PrimeiraRotina(cityName):
             
             connection.close()
 
+    print(result)
     return result

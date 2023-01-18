@@ -23,7 +23,6 @@ function Companies() {
             .then(jsonData => setData(jsonData));
     }, [])
 
-    console.log(data)
     const [maxDataSize, setMaxDataSize] = useState(data);
 
     return (

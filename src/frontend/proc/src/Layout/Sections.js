@@ -1,11 +1,11 @@
-import TopTeams from "../Procedures/TopTeams";
+import PrimeiraRotina from "../Procedures/PrimeiraRotina";
 
 const Sections = [
 
     {
         id: "top-teams",
         label: "Top Teams",
-        content: <TopTeams/>
+        content: <PrimeiraRotina/>
     },
 
     {

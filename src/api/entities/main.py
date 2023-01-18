@@ -111,6 +111,17 @@ def get_cities():
         cities.append(city)
     return jsonify([city.__dict__ for city in cities]), 201
 
+@app.route('/api/city/get/', methods=['GET'])
+def get_city():
+    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+    cities = []
+    cursor_insert = db_dst.cursor() 
+    cursor_insert.execute("SELECT name FROM cities")
+    for element in cursor_insert:
+        city = element
+        cities.append(city)
+    return jsonify([city for city in cities]), 201
+
 
 @app.route('/api/jobs/get/', methods=['GET'])
 def get_jobs():
