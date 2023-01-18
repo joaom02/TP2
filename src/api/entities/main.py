@@ -68,7 +68,7 @@ def insert_jobs():
     data = request.get_json()
     cursor_insert = db_dst.cursor()
     jobs = json.loads(data)
-    print(jobs)
+
     for job in jobs:
 
         cursor_insert.execute("SELECT id FROM companies WHERE name = '"+str(job["companyname"])+"'")
@@ -84,7 +84,6 @@ def insert_jobs():
         name = str(job["name"]).replace("'"," ")
         cursor_insert.execute("INSERT INTO jobs (name,companyid,cityref,summary) values ('"+name+"','"+str(companyname)+"','"+str(cityname)+"','"+summary+"')")
         db_dst.commit()
-        cursor_insert.execute("SELECT * FROM jobs")
     
     db_dst.close()
     return "top"

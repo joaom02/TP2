@@ -34,15 +34,14 @@ def save():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
     data = request.get_json()
     cursor_save = db_dst.cursor() 
-    cities=[]
-    
+    print(data)
     for city in data:
-        cities.append(city)
-        cursor_save.execute("UPDATE cities SET latitude = "+str(data[city]["latitude"])+", longitude = "+ str(data[city]["longitude"])+" WHERE id = "+str(data[city]["id"]))
+        
+        cursor_save.execute("UPDATE cities SET latitude = "+str(data[city]["latitude"])+", longitude = "+ str(data[city]["longitude"])+" WHERE id = '"+str(data[city]["id"])+"'")
         cursor_save.execute("SELECT * FROM cities")
     db_dst.commit()
     db_dst.close() 
-    return json.dumps(cities)
+    return "top"
    
 
 
