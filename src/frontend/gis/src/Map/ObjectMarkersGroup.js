@@ -70,8 +70,19 @@ const DEMO_DATA = [
 function ObjectMarkersGroup() {
 
     const map = useMap();
-    const [geom, setGeom] = useState([...DEMO_DATA]);
+    const [data, setData] = useState(null)
+
+    useEffect(() => {
+        fetch('http://localhost:20002/api/markers')
+            .then(response => response.json())
+            .then(jsonData => setData(jsonData));
+    }, [])
+
+    const [geom, setGeom] = useState([...data]);
     const [bounds, setBounds] = useState(map.getBounds());
+
+
+
 
     /**
      * Setup the event to update the bounds automatically
@@ -90,7 +101,7 @@ function ObjectMarkersGroup() {
     /* Updates the data for the current bounds */
     useEffect(() => {
         console.log(`> getting data for bounds`, bounds);
-        setGeom(DEMO_DATA);
+        setGeom(data.map(data => data));
     }, [bounds])
 
     return (
