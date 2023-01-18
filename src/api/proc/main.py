@@ -21,10 +21,8 @@ app.config["DEBUG"] = True
 @app.route('/api/PrimeiraRotina', methods=['GET'])
 def get_Jobs_in_city():
     response = request.args.get('name')
-    print(response)
     server = xmlrpc.client.ServerProxy('http://rpc-server:9000')
     teste = server.PrimeiraRotina(response)
-    print(teste)
 
     return jsonify(teste)
 

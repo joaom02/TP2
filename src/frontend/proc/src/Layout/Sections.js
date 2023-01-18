@@ -3,16 +3,30 @@ import PrimeiraRotina from "../Procedures/PrimeiraRotina";
 const Sections = [
 
     {
-        id: "top-teams",
-        label: "Top Teams",
+        id: "primeiraRotina",
+        label: "Trabalhos disponíveis numa determinada Cidade",
         content: <PrimeiraRotina/>
     },
 
     {
-        id: "top-scorers",
-        label: "Top Scorers",
+        id: "segundaRotina",
+        label: "segundaRotina",
         content: <h1>Top Scorers - Work in progresss</h1>
-    }
+    },
+    {
+        id: "terceiraRotina",
+        label: "terceiraRotina",
+        content: <h1>Top Scorers - Work in progresss</h1>
+    },
+    {
+        id: "quartaRotina",
+        label: "quartaRotina",
+        content: <h1>Top Scorers - Work in progresss</h1>
+    },    {
+        id: "quintaRotina",
+        label: "quintaRotina",
+        content: <h1>Top Scorers - Work in progresss</h1>
+    },
 
 ];
 

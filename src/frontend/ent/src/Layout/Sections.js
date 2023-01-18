@@ -7,13 +7,13 @@ const Sections = [
 
     {
         id: "jobs",
-        label: "JObs",
+        label: "Jobs",
         content: <Jobs/>
     },
 
     {
-        id: "teams",
-        label: "Teams",
+        id: "companies",
+        label: "Companies",
         content: <Companies/>
     },
 
