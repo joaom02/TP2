@@ -68,10 +68,7 @@ def get_markers():
                 "properties": {
                     "id": element[0],
                     "name": element[1],
-                    "country": "Portugal",
-                    "position": "Striker",
-                    "imgUrl": "https://cdn-icons-png.flaticon.com/512/805/805401.png",
-                    "number": 7
+                    "imgUrl": "https://image.shutterstock.com/image-vector/city-vector-icon-260nw-144313540.jpg",
                 }
             }
         cities.append(city)

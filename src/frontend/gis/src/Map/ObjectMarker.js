@@ -6,12 +6,6 @@ import React from "react";
 import {Marker, Popup} from 'react-leaflet';
 import {icon as leafletIcon, point} from "leaflet";
 
-const LIST_PROPERTIES = [
-    {"key": "country", label: "Country", Icon: FlagIcon},
-    {"key": "number", label: "Shirt Number", Icon: ContactsIcon},
-    {"key": "position", label: "Position", Icon: PictureInPictureAltIcon}
-];
-
 export function ObjectMarker({geoJSON}) {
     const properties = geoJSON?.properties
     const {id, imgUrl, name} = properties;
@@ -34,23 +28,6 @@ export function ObjectMarker({geoJSON}) {
                         </ListItemIcon>
                         <ListItemText primary={name}/>
                     </ListItem>
-                    {
-                        LIST_PROPERTIES
-                            .map(({key, label, Icon}) =>
-                                <ListItem key={key}>
-                                    <ListItemIcon>
-                                        <Icon style={{color: "black"}}/>
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={<span>
-                                        {properties[key]}<br/>
-                                        <label style={{fontSize: "xx-small"}}>({label})</label>
-                                    </span>}
-                                    />
-                                </ListItem>
-                            )
-                    }
-
                 </List>
 
             </Popup>
