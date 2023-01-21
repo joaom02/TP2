@@ -19,7 +19,6 @@ def TerceiraRotina(CompanyName):
                 if e not in result:
                     result.append(e)
 
-        print(result)
               
         
        
