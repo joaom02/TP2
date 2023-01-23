@@ -11,6 +11,8 @@ PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
 connection = psycopg2.connect(host='db-xml', database='is', user='is', password='is')
 cursor = connection.cursor()
 
+
+
 app = Flask(__name__)
 
 class Query(graphene.ObjectType):

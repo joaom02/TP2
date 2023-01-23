@@ -20,6 +20,8 @@ def add_cors_headers(response):
     return response
 app.config["DEBUG"] = True
 
+
+#inserts the cities received from the db-xml in the db-rel 
 @app.route('/api/cities/insert/',methods=['POST','GET'])
 def insert_cities():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -39,7 +41,7 @@ def insert_cities():
     return data
 
 
-
+#inserts the companies received from the db-xml in the db-rel 
 @app.route('/api/companies/insert/',methods=['POST'])
 def insert_companies():
     data = request.get_json()
@@ -58,7 +60,7 @@ def insert_companies():
     db_dst.close()
     return data
 
-
+#inserts the jobs received from the db-xml in the db-rel 
 @app.route('/api/jobs/insert/',methods=['POST'])
 def insert_jobs():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -85,7 +87,7 @@ def insert_jobs():
     db_dst.close()
     return "top"
 
-
+#returns all the companies in the relational dabase 
 @app.route('/api/companies/get/', methods=['GET'])
 def get_companies():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -98,7 +100,7 @@ def get_companies():
         companies.append(company)
     return jsonify([company.__dict__ for company in companies]), 201
 
-
+#returns all the cities in the relational dabase 
 @app.route('/api/cities/get/', methods=['GET'])
 def get_cities():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -110,6 +112,23 @@ def get_cities():
         city = City(name=element[1], id = element[0], latitude = element[2], longitude = element[3], created_on = element[4], updated_on = element[5])
         cities.append(city)
     return jsonify([city.__dict__ for city in cities]), 201
+
+
+
+#returns all the jobs in the relational dabase 
+@app.route('/api/jobs/get/', methods=['GET'])
+def get_jobs():
+    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+    cursor = db_dst.cursor()
+    jobs = []
+    
+    cursor.execute("SELECT id, name, summary, created_on, updated_on FROM jobs")
+    for element in cursor:
+        job = Job(name=element[1], id = element[0], summary= element[2],  created_on = element[3], updated_on = element[4])
+        jobs.append(job)
+    return jsonify([job.__dict__ for job in jobs]), 201
+
+
 
 @app.route('/api/city/get/', methods=['GET'])
 def get_city():
@@ -134,20 +153,6 @@ def get_company():
         company = element
         companies.append(company)
     return jsonify([company for company in companies]), 201
-
-
-@app.route('/api/jobs/get/', methods=['GET'])
-def get_jobs():
-    db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
-    cursor = db_dst.cursor()
-    jobs = []
-    
-    cursor.execute("SELECT id, name, summary, created_on, updated_on FROM jobs")
-    for element in cursor:
-        job = Job(name=element[1], id = element[0], summary= element[2],  created_on = element[3], updated_on = element[4])
-        jobs.append(job)
-    return jsonify([job.__dict__ for job in jobs]), 201
-
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=PORT)

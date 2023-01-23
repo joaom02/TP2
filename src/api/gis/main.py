@@ -12,7 +12,7 @@ def add_cors_headers(response):
     return response
 app.config["DEBUG"] = True
 
-
+#sends data from a determined number of cities that dont have coordinates in the database
 @app.route('/api/retrive/', methods=['POST'])
 def retrive():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -33,6 +33,7 @@ def retrive():
     db_dst.close() 
     return cities
        
+#updates the city records with the data that was received from gis-updater     
 @app.route('/api/save/', methods=['POST'])
 def save():
     db_dst = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
@@ -48,7 +49,7 @@ def save():
     return "top"
    
 
-
+#returns an array of city objects to be displayed in the frontend-gis
 @app.route('/api/markers', methods=['GET'])
 def get_markers():
     args = request.args
