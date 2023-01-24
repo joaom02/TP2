@@ -21,6 +21,9 @@ function QuartaRotina() {
           fetch(`http://localhost:20004/api/QuartaRotina`)
             .then(response => response.json())
             .then(jsonData => setProcData(jsonData));
+          fetch(`http://localhost:20003/graphql/QuartaRotina`)
+            .then(response => response.json())
+            .then(jsonData => setGQLData(jsonData));
       }, []);
 
     return (
@@ -79,15 +82,50 @@ function QuartaRotina() {
                 </Table>
             </TableContainer>
                 <h2>Results <small>(GraphQL)</small></h2>
-                {/* {
-                    gqlData ?
-                        <ul>
-                            {
-                                gqlData.map(data => <li>{data.team}</li>)
-                            }
-                        </ul> :
-                        selectedCountry ? <CircularProgress/> : "--"
-                } */}
+                <TableContainer component={Paper}>
+                <Table sx={{minWidth: 650}} aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell component="th" width={"1px"} align="center">ID</TableCell>
+                            <TableCell>Job Name</TableCell>
+                            <TableCell>Company Name</TableCell>
+                            <TableCell>City Name</TableCell>
+                            <TableCell>Summary</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            gqlData ?
+                                JSON.parse(gqlData).map((row) => (
+                                    <TableRow
+                                        key={row.id}
+                                        style={{background: "gray", color: "black"}}
+                                    >
+                                        <TableCell component="td" align="center">{row.id}</TableCell>
+                                        <TableCell component="td" scope="row">
+                                            {row.name}
+                                        </TableCell>
+                                        <TableCell component="td" align="center" scope="row">
+                                            {row.companyname}
+                                        </TableCell>
+                                        <TableCell component="td" align="center" scope="row">
+                                            {row.cityname}
+                                        </TableCell>
+                                        <TableCell component="td" align="center" scope="row">
+                                            {row.summary}
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                                :
+                                <TableRow>
+                                    <TableCell colSpan={3}>
+                                        <CircularProgress/>
+                                    </TableCell>
+                                </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </TableContainer>
             </Container>
         </>
     );
