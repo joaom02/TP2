@@ -27,7 +27,6 @@ class Query(graphene.ObjectType):
     def resolve_PrimeiraRotina(self, info, city):
         result=[]
         cityid = []
-        
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
@@ -88,7 +87,7 @@ class Query(graphene.ObjectType):
 
     QuartaRotina = graphene.String()
 
-    def resolve_QuartaRotina(self,info,):
+    def resolve_QuartaRotina(self,info):
         result=[]
         jobid = random.randint(0,560)
         job={}
