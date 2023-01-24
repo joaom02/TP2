@@ -20,7 +20,7 @@ function PrimeiraRotina() {
             fetch(`http://localhost:20004/api/PrimeiraRotina?name=${selectedCountry}`)
                 .then(response => response.json())
                 .then(jsonData => setProcData(jsonData));
-            fetch(`http://localhost:20003/api/PrimeiraRotina?name=${selectedCountry}`)
+            fetch(`http://localhost:20003/graphql/PrimeiraRotina?name=${selectedCountry}`)
                 .then(response => response.json())
                 .then(jsonData => setGQLData(jsonData));
         }
@@ -77,10 +77,15 @@ function PrimeiraRotina() {
                     gqlData ?
                         <ul>
                             {
+                            console.log(gqlData)
+                            }
+                            {
                                 gqlData.map(data => <li>{data.team}</li>)
                             }
+
                         </ul> :
                         selectedCountry ? <CircularProgress/> : "--"
+
                 }
             </Container>
         </>
