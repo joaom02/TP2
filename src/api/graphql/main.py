@@ -50,9 +50,10 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
+        rate="4"
         connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
         cursor = connection.cursor()
-        sql = "SELECT name FROM companies where rating >= '"+rate+"' LIMIT 20"
+        sql = "SELECT name FROM companies where rating >= '"+rate+"' AND rating != 'NaN' LIMIT 20"
         cursor.execute(sql)
         
         
