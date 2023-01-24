@@ -1,7 +1,7 @@
 import sys
 
 import graphene
-from flask import Flask,request
+from flask import Flask,request,jsonify
 from flask_graphql import GraphQLView
 import json
 import psycopg2
@@ -27,7 +27,8 @@ class Query(graphene.ObjectType):
     def resolve_PrimeiraRotina(self, info, city):
         result=[]
         cityid = []
-        coiso = "SELECT id FROM cities where name =" + city
+        
+        coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
@@ -35,13 +36,13 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT name FROM jobs where cityref = "+str(id))
+            cursor.execute("SELECT name FROM jobs where cityref = '"+str(id)+"'")
 
             for row in cursor:
                 for e in row:
                     if e not in result:
                         result.append(e)  
-
+        
         return json.dumps(result)
     
 
@@ -49,7 +50,7 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
-        sql = "SELECT name FROM companies where rating = "+rate
+        sql = "SELECT name FROM companies where rating >= '"+rate+"'"
         cursor.execute(sql)
       
         
@@ -66,7 +67,7 @@ class Query(graphene.ObjectType):
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
         companyid = []
-        coiso = "SELECT id FROM companies where name =" + CompanyName
+        coiso = "SELECT id FROM companies where name ='" + CompanyName+"'"
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
@@ -74,7 +75,7 @@ class Query(graphene.ObjectType):
                     companyid.append(e)
         
         for id in companyid:
-            cursor.execute("SELECT name FROM jobs where cityref = "+str(id))
+            cursor.execute("SELECT name FROM jobs where cityref = '"+str(id)+"'")
 
             for row in cursor:
                 for e in row:
@@ -91,16 +92,16 @@ class Query(graphene.ObjectType):
         jobid = random.randint(0,560)
         job={}
 
-        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs where id="+jobid)
+        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs where id= '"+jobid+"'")
 
         for element in cursor:
             cursor_temp = connection.cursor()
             cursor_temp2 = connection.cursor()
             summary = str(element[3]).replace("'"," ")
-            cursor_temp.execute("SELECT name FROM cities where id ="+element[2])
+            cursor_temp.execute("SELECT name FROM cities where id = '"+element[2]+"'")
             for city in cursor_temp:
                 cityName = city[0]
-                cursor_temp2.execute("SELECT name FROM companies where id ="+element[1])
+                cursor_temp2.execute("SELECT name FROM companies where id ='"+element[1]+"'")
                 for company in cursor_temp2:
                     companyName = company[0]
         
@@ -120,7 +121,7 @@ class Query(graphene.ObjectType):
     def resolve_QuintaRotina(self, info, city):
         result=[]
         cityid = []
-        coiso = "SELECT id FROM cities where name =" + city
+        coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
@@ -128,7 +129,7 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = "+str(id))
+            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = '"+str(id)+"'")
 
             for row in cursor:
                 for e in row:
@@ -156,7 +157,7 @@ def get_Jobs_in_city():
    
 
 
-    return json.dumps(result.data['PrimeiraRotina'])
+    return jsonify(result.data['PrimeiraRotina'])
 
 
 
@@ -173,7 +174,7 @@ def get_Companies_by_rating():
     '''
     )   
 
-    return json.dumps(result.data['SegundaRotina'])
+    return jsonify(result.data['SegundaRotina'])
 
 
 @app.route('/graphql/TerceiraRotina', methods=['GET'])
@@ -187,7 +188,7 @@ def get_Number_of_Available_Jobs_by_Company():
     '''
     )   
 
-    return json.dumps(result.data['TerceiraRotina'])
+    return jsonify(result.data['TerceiraRotina'])
 
 
 @app.route('/graphql/QuartaRotina', methods=['GET'])
@@ -200,7 +201,7 @@ def get_random_job():
     '''
     )   
 
-    return json.dumps(result.data['QuartaRotina'])
+    return jsonify(result.data['QuartaRotina'])
 
 @app.route('/graphql/QuintaRotina', methods=['GET'])
 def get_Companies_with_jobs_in_a_city():
@@ -213,7 +214,7 @@ def get_Companies_with_jobs_in_a_city():
     '''
     )   
 
-    return json.dumps(result.data['QuintaRotina'])
+    return jsonify(result.data['QuintaRotina'])
 
 
 if __name__ == '__main__':
