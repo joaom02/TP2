@@ -27,7 +27,7 @@ class Query(graphene.ObjectType):
     def resolve_PrimeiraRotina(self, info, city):
         result=[]
         cityid = []
-        city="San Francisco"
+        
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
@@ -50,9 +50,10 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
+        
         sql = "SELECT name FROM companies where rating >= '"+rate+"'"
         cursor.execute(sql)
-      
+        
         
         for row in cursor:    
             for e in row:
@@ -67,16 +68,15 @@ class Query(graphene.ObjectType):
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
         companyid = []
-        CompanyName="Microsoft"
         coiso = "SELECT id FROM companies where name ='" + CompanyName+"'"
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
                 if e not in companyid:
                     companyid.append(e)
-        
+        print(companyid)
         for id in companyid:
-            cursor.execute("SELECT name FROM jobs where cityref = '"+str(id)+"'")
+            cursor.execute("SELECT name FROM jobs where companyid = '"+str(id)+"'")
 
             for row in cursor:
                 for e in row:
@@ -122,6 +122,7 @@ class Query(graphene.ObjectType):
     def resolve_QuintaRotina(self, info, city):
         result=[]
         cityid = []
+        
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
