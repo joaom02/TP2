@@ -69,6 +69,7 @@ class Query(graphene.ObjectType):
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
         companyid = []
+        CompanyName="Niantic"
         connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
         cursor = connection.cursor()
         coiso = "SELECT id FROM companies where name ='" + CompanyName+"'"
@@ -130,7 +131,7 @@ class Query(graphene.ObjectType):
         result=[]
         cityid = []
         companyid = []
-        city="Oakland"
+        
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
