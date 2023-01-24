@@ -14,6 +14,9 @@ function SegundaRotina() {
           fetch(`http://localhost:20004/api/SegundaRotina?name=${selectedCountry}`)
             .then(response => response.json())
             .then(jsonData => setProcData(jsonData));
+          fetch(`http://localhost:20003/graphql/SegundaRotina?name=${selectedCountry}`)
+            .then(response => response.json())
+            .then(jsonData => setGQLData(jsonData));
         }
       }, [selectedCountry]);
 
@@ -57,15 +60,16 @@ function SegundaRotina() {
                         procData ? <CircularProgress/> : "--"
                 }
                 <h2>Results <small>(GraphQL)</small></h2>
-                {/* {
+                {
                     gqlData ?
                         <ul>
                             {
-                                gqlData.map(data => <li>{data.team}</li>)
+                                JSON.parse(gqlData).map(data => <li key={data}>{data}</li>)
                             }
                         </ul> :
-                        selectedCountry ? <CircularProgress/> : "--"
-                } */}
+                        gqlData ? <CircularProgress/> : "--"
+
+                }
             </Container>
         </>
     );
