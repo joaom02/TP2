@@ -92,7 +92,7 @@ class Query(graphene.ObjectType):
         jobid = random.randint(0,560)
         job={}
 
-        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs where id= '"+jobid+"'")
+        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs ORDER BY RANDOM() LIMIT 1")
 
         for element in cursor:
             cursor_temp = connection.cursor()
