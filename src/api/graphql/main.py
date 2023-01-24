@@ -8,8 +8,7 @@ import psycopg2
 import random
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
-connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
-cursor = connection.cursor()
+
 
 
 
@@ -27,6 +26,8 @@ class Query(graphene.ObjectType):
     def resolve_PrimeiraRotina(self, info, city):
         result=[]
         cityid = []
+        connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+        cursor = connection.cursor()
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
@@ -49,7 +50,8 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
-        
+        connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+        cursor = connection.cursor()
         sql = "SELECT name FROM companies where rating >= '"+rate+"' LIMIT 20"
         cursor.execute(sql)
         
@@ -67,6 +69,8 @@ class Query(graphene.ObjectType):
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
         companyid = []
+        connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+        cursor = connection.cursor()
         coiso = "SELECT id FROM companies where name ='" + CompanyName+"'"
         cursor.execute(coiso)
         for row in cursor:
@@ -88,6 +92,8 @@ class Query(graphene.ObjectType):
     QuartaRotina = graphene.String()
 
     def resolve_QuartaRotina(self,info):
+        connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+        cursor = connection.cursor()
         result=[]
         jobid = random.randint(0,560)
         job={}
@@ -119,9 +125,11 @@ class Query(graphene.ObjectType):
     QuintaRotina = graphene.String(city=graphene.Argument(graphene.String, default_value="San Francisco"))
 
     def resolve_QuintaRotina(self, info, city):
+        connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
+        cursor = connection.cursor()
         result=[]
         cityid = []
-        
+        city="Oakland"
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:
@@ -141,7 +149,6 @@ class Query(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query)
-
 
 
 
