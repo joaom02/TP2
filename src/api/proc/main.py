@@ -37,6 +37,7 @@ def get_Companies_by_rating():
 @app.route('/api/TerceiraRotina', methods=['GET'])
 def get_Number_of_Available_Jobs_by_Company():
     response = request.args.get('name')
+    response="Niantic"
     teste = server.TerceiraRotina(response)
 
     return jsonify(teste)
@@ -52,6 +53,7 @@ def get_random_job():
 @app.route('/api/QuintaRotina', methods=['GET'])
 def get_Companies_with_jobs_in_a_city():
     response = request.args.get('name')
+    
     teste = server.QuintaRotina(response)
     
     return jsonify(teste)

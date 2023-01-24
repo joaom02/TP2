@@ -50,6 +50,7 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
+        rate="4"
         connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
         cursor = connection.cursor()
         sql = "SELECT name FROM companies where rating >= '"+rate+"' AND rating != 'NaN' LIMIT 20"
@@ -69,6 +70,7 @@ class Query(graphene.ObjectType):
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
         companyid = []
+        CompanyName="Niantic"
         connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
         cursor = connection.cursor()
         coiso = "SELECT id FROM companies where name ='" + CompanyName+"'"
@@ -131,6 +133,7 @@ class Query(graphene.ObjectType):
         result=[]
         cityid = []
         companyid = []
+        
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:

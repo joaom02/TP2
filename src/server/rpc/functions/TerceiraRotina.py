@@ -15,11 +15,12 @@ def TerceiraRotina(CompanyName):
         cursor.execute(sql)
         
         for row in cursor:
+            
             for e in row:
                 if e not in result:
                     result.append(e)
 
-              
+        
         
        
     except (Exception, psycopg2.Error) as error:
