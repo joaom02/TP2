@@ -52,7 +52,7 @@ class Query(graphene.ObjectType):
         result=[]
         connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
         cursor = connection.cursor()
-        sql = "SELECT name FROM companies where rating >= '"+rate+"' LIMIT 20"
+        sql = "SELECT name FROM companies where rating >= '"+rate+"' AND rating != 'NaN' LIMIT 20"
         cursor.execute(sql)
         
         
@@ -98,7 +98,7 @@ class Query(graphene.ObjectType):
         jobid = random.randint(0,560)
         job={}
 
-        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs ORDER BY RANDOM() LIMIT 1")
+        cursor.execute("SELECT name, companyid, cityref,summary,id FROM jobs ORDER BY RANDOM() LIMIT 1")
 
         for element in cursor:
             cursor_temp = connection.cursor()
@@ -112,6 +112,7 @@ class Query(graphene.ObjectType):
                     companyName = company[0]
         
                 job = {
+                            "id":element[4],
                             "name":element[0],
                             "companyname":companyName,
                             "cityname":cityName,
@@ -130,7 +131,6 @@ class Query(graphene.ObjectType):
         result=[]
         cityid = []
         companyid = []
-        city="Oakland"
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
         for row in cursor:

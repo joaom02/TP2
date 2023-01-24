@@ -22,6 +22,7 @@ def QuartaRotina():
                 companyName = city[0]
         
             job = {
+                        "id":jobid,
                         "name":element[0],
                         "companyname":element[2],
                         "cityname":companyName,
