@@ -77,16 +77,14 @@ function PrimeiraRotina() {
                     gqlData ?
                         <ul>
                             {
-                            console.log(gqlData)
+                                JSON.parse(gqlData).map(data => <li key={data}>{data}</li>)
                             }
-                            {
-                                gqlData.map(data => <li>{data.team}</li>)
-                            }
-
                         </ul> :
-                        selectedCountry ? <CircularProgress/> : "--"
+                        gqlData ? <CircularProgress/> : "--"
 
                 }
+
+
             </Container>
         </>
     );
