@@ -8,12 +8,17 @@ import psycopg2
 import random
 
 PORT = int(sys.argv[1]) if len(sys.argv) >= 2 else 9000
-connection = psycopg2.connect(host='db-xml', database='is', user='is', password='is')
+connection = psycopg2.connect(host='db-rel', database='is', user='is', password='is')
 cursor = connection.cursor()
 
 
 
 app = Flask(__name__)
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+app.config["DEBUG"] = True
 
 class Query(graphene.ObjectType):
 
@@ -22,7 +27,7 @@ class Query(graphene.ObjectType):
     def resolve_PrimeiraRotina(self, info, city):
         result=[]
         cityid = []
-        coiso = "SELECT unnest(xpath('//JobDataset/Cities/City[@name =''"+city+"'']/@id',xml)) FROM imported_documents"
+        coiso = "SELECT id FROM cities where name =" + city
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
@@ -30,7 +35,7 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT unnest(xpath('//JobDataset/Companies/Company/Jobs/Job[City/@ref =''"+str(id)+"'' ]/Name/text()',xml)) FROM imported_documents LIMIT 20 ")
+            cursor.execute("SELECT name FROM jobs where cityref = "+str(id))
 
             for row in cursor:
                 for e in row:
@@ -44,7 +49,7 @@ class Query(graphene.ObjectType):
 
     def resolve_SegundaRotina(self,info,rate):
         result=[]
-        sql = "SELECT unnest(xpath('/JobDataset/Companies/Company[Rating>=''"+rate+"'']/Name/text()',xml)) from imported_documents LIMIT 20"
+        sql = "SELECT name FROM companies where rating = "+rate
         cursor.execute(sql)
       
         
@@ -60,15 +65,23 @@ class Query(graphene.ObjectType):
 
     def resolve_TerceiraRotina(self,info,CompanyName):
         result=[]
-        sql = "SELECT unnest(xpath('/JobDataset/Companies/Company[Name/text()=''"+CompanyName+"'']/Jobs/Job/Name/text()',xml)) FROM imported_documents LIMIT 20"
-        cursor.execute(sql)
-        
+        companyid = []
+        coiso = "SELECT id FROM companies where name =" + CompanyName
+        cursor.execute(coiso)
         for row in cursor:
             for e in row:
-                if e not in result:
-                    result.append(e)
+                if e not in companyid:
+                    companyid.append(e)
+        
+        for id in companyid:
+            cursor.execute("SELECT name FROM jobs where cityref = "+str(id))
 
-        return  json.dumps(result)
+            for row in cursor:
+                for e in row:
+                    if e not in result:
+                        result.append(e)  
+
+        return json.dumps(result)
 
 
     QuartaRotina = graphene.String()
@@ -78,23 +91,26 @@ class Query(graphene.ObjectType):
         jobid = random.randint(0,560)
         job={}
 
-        cursor.execute("SELECT unnest(xpath('//Job[@id=''"+str(jobid)+"'']/Name/text()',xml)),unnest(xpath('//Job[@id=''"+str(jobid)+"'']/Summary/text()',xml)),unnest(xpath('//Company[Jobs/Job/@id=''"+str(jobid)+"'']/Name/text()',xml)),unnest(xpath('//Job[@id=''"+str(jobid)+"'']/City/@ref',xml)) FROM imported_documents LIMIT 20")
+        cursor.execute("SELECT name, companyid, cityref,summary FROM jobs where id="+jobid)
 
         for element in cursor:
-            print(element)
             cursor_temp = connection.cursor()
-            summary = str(element[1]).replace("'"," ")
-            cursor_temp.execute("SELECT unnest(xpath('//City[@id="+str(element[3])+"]/@name',xml)) FROM imported_documents")
+            cursor_temp2 = connection.cursor()
+            summary = str(element[3]).replace("'"," ")
+            cursor_temp.execute("SELECT name FROM cities where id ="+element[2])
             for city in cursor_temp:
-                companyName = city[0]
+                cityName = city[0]
+                cursor_temp2.execute("SELECT name FROM companies where id ="+element[1])
+                for company in cursor_temp2:
+                    companyName = company[0]
         
-            job = {
-                        "name":element[0],
-                        "companyname":element[2],
-                        "cityname":companyName,
-                        "summary":summary
-                    }
-        result.append(job)
+                job = {
+                            "name":element[0],
+                            "companyname":companyName,
+                            "cityname":cityName,
+                            "summary":summary
+                        }
+            result.append(job)
 
         return  json.dumps(result)
 
@@ -104,7 +120,7 @@ class Query(graphene.ObjectType):
     def resolve_QuintaRotina(self, info, city):
         result=[]
         cityid = []
-        coiso = "SELECT unnest(xpath('//JobDataset/Cities/City[@name =''"+city+"'']/@id',xml)) FROM imported_documents"
+        coiso = "SELECT id FROM cities where name =" + city
         cursor.execute(coiso)
         for row in cursor:
             for e in row:
@@ -112,7 +128,7 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT unnest(xpath('//JobDataset/Companies/Company[Jobs/Job/City/@ref =''"+str(id)+"'' ]/Name/text()',xml)) FROM imported_documents LIMIT 20 ")
+            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = "+str(id))
 
             for row in cursor:
                 for e in row:

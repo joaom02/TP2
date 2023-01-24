@@ -17,11 +17,13 @@ function PrimeiraRotina() {
 
     useEffect(() => {
         if (selectedCountry) {
-          fetch(`http://localhost:20004/api/PrimeiraRotina?name=${selectedCountry}`)
-            .then(response => response.json())
-            .then(jsonData => setProcData(jsonData));
+            fetch(`http://localhost:20004/api/PrimeiraRotina?name=${selectedCountry}`)
+                .then(response => response.json())
+                .then(jsonData => setProcData(jsonData));
+            fetch(`http://localhost:20003/api/PrimeiraRotina?name=${selectedCountry}`)
+                .then(response => response.json())
+                .then(jsonData => setGQLData(jsonData));
         }
-        console.log(procData)
       }, [selectedCountry]);
 
     return (
@@ -71,7 +73,7 @@ function PrimeiraRotina() {
                         procData ? <CircularProgress/> : "--"
                 }
                 <h2>Results <small>(GraphQL)</small></h2>
-                {/* {
+                {
                     gqlData ?
                         <ul>
                             {
@@ -79,7 +81,7 @@ function PrimeiraRotina() {
                             }
                         </ul> :
                         selectedCountry ? <CircularProgress/> : "--"
-                } */}
+                }
             </Container>
         </>
     );
