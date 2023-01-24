@@ -35,7 +35,7 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT name FROM jobs where cityref = '"+str(id)+"'")
+            cursor.execute("SELECT name FROM jobs where cityref = '"+str(id)+"' LIMIT 20")
 
             for row in cursor:
                 for e in row:
@@ -50,7 +50,7 @@ class Query(graphene.ObjectType):
     def resolve_SegundaRotina(self,info,rate):
         result=[]
         
-        sql = "SELECT name FROM companies where rating >= '"+rate+"'"
+        sql = "SELECT name FROM companies where rating >= '"+rate+"' LIMIT 20"
         cursor.execute(sql)
         
         
@@ -75,7 +75,7 @@ class Query(graphene.ObjectType):
                     companyid.append(e)
         print(companyid)
         for id in companyid:
-            cursor.execute("SELECT name FROM jobs where companyid = '"+str(id)+"'")
+            cursor.execute("SELECT name FROM jobs where companyid = '"+str(id)+"' LIMIT 20")
 
             for row in cursor:
                 for e in row:
@@ -130,7 +130,7 @@ class Query(graphene.ObjectType):
                     cityid.append(e)
         
         for id in cityid:
-            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = '"+str(id)+"'")
+            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = '"+str(id)+"' LIMIT 20")
 
             for row in cursor:
                 for e in row:
