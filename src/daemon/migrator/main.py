@@ -95,21 +95,30 @@ if __name__ == "__main__":
                 
                
 
-                cursor_data.execute("SELECT unnest(xpath('//Job/Name/text()',xml)),unnest(xpath('//Job/Summary/text()',xml)),unnest(xpath('//Company/Name/text()',xml)),unnest(xpath('//Job/City/@ref',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                cursor_data.execute("SELECT unnest(xpath('//Job/Name/text()',xml)),unnest(xpath('//Job/Summary/text()',xml)),unnest(xpath('//Job/City/@ref',xml)),unnest(xpath('//Job/@id',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
 
                 for element in cursor_data:
+                    print(element[3])
+                    jobid=element[3]
+                    jobname = str(element[0]).replace("'","\'")
+                    summary = str(element[1]).replace("'","\'")
                     cursor_temp = db_org.cursor()
-                    summary = str(element[1]).replace("'"," ")
-                    cursor_temp.execute("SELECT unnest(xpath('//City[@id="+str(element[3])+"]/@name',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                    cursor_temp.execute("SELECT unnest(xpath('//Company[Jobs/Job/@id=''"+jobid+"'']/Name/text()',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
+                    for company in cursor_temp:
+                        companyname = company[0] 
+                    print(companyname)
+                    
+                    cursor_temp.execute("SELECT unnest(xpath('//City[@id="+str(element[2])+"]/@name',xml)) FROM imported_documents WHERE file_name='"+str(name[1])+"'")
                     for city in cursor_temp:
-                        companyName = city[0]
+                        cityid = city[0]
                     job = {
-                        "name":element[0],
-                        "companyname":element[2],
-                        "cityname":companyName,
+                        "name":jobname,
+                        "companyname":companyname,
+                        "cityname":cityid,
                         "summary":summary
                     }
-                    jobs.append(job) 
+                    jobs.append(job)
+                
                 #!TODO: 3- Execute INSERT queries in the destination db
                 #Mandar para a API
                 try:

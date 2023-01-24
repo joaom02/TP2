@@ -52,8 +52,9 @@ def get_random_job():
 @app.route('/api/QuintaRotina', methods=['GET'])
 def get_Companies_with_jobs_in_a_city():
     response = request.args.get('name')
+    response="Oakland"
     teste = server.QuintaRotina(response)
-
+    
     return jsonify(teste)
 
 

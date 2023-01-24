@@ -129,6 +129,7 @@ class Query(graphene.ObjectType):
         cursor = connection.cursor()
         result=[]
         cityid = []
+        companyid = []
         city="Oakland"
         coiso = "SELECT id FROM cities where name ='" + city+"'"
         cursor.execute(coiso)
@@ -136,9 +137,17 @@ class Query(graphene.ObjectType):
             for e in row:
                 if e not in cityid:
                     cityid.append(e)
-        
+
         for id in cityid:
-            cursor.execute("SELECT c.name FROM companies c, jobs j where j.companyid = c.id AND j.cityref = '"+str(id)+"' LIMIT 20")
+            cursor.execute("SELECT companyid FROM jobs where cityref = '"+str(id)+"'")
+
+            for row in cursor:
+                for e in row:
+                    if e not in result:
+                        companyid.append(e) 
+        
+        for id in companyid:
+            cursor.execute("SELECT name FROM companies where id='"+str(id)+"'")
 
             for row in cursor:
                 for e in row:

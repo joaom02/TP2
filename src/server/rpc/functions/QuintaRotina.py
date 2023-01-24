@@ -19,7 +19,7 @@ def QuintaRotina(cityName):
                     city.append(e)
         
         for id in city:
-            cursor.execute("SELECT unnest(xpath('//JobDataset/Companies/Company[Jobs/Job/City/@ref =''"+str(id)+"'' ]/Name/text()',xml)) FROM imported_documents LIMIT 20 ")
+            cursor.execute("SELECT unnest(xpath('//JobDataset/Companies/Company[Jobs/Job/City/@ref =''"+str(id)+"'' ]/Name/text()',xml)) FROM imported_documents")
 
             for row in cursor:
                 for e in row:
